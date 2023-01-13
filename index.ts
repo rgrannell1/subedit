@@ -1,5 +1,6 @@
 
 import type { Prism, Traversal } from './types.ts';
+import { AbstractPrism } from './types.ts';
 
 /*
  * A prism that matches a regular expression (at most once) against a string.
@@ -7,15 +8,16 @@ import type { Prism, Traversal } from './types.ts';
  * - view: returns the matched string, or null if no match
  * - set: replaces the matched string with the new string, or returns the original string if no match
  */
-export function Match (pattern: RegExp): Prism<string, string> {
-  return new class implements Prism<string, string> {
-    view(whole: string) {
+export function Match (pattern: RegExp) {
+  return new class extends AbstractPrism<string, string> {
+    view(whole: string): string | null {
       const matches = whole.match(pattern);
 
       return matches === null || matches.length === 0
         ? null
         : matches[0];
     }
+
     set(newPart: string, whole: string) {
       const matches = whole.match(pattern);
 

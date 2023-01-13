@@ -5,9 +5,11 @@ import * as Mod from './index.ts';
 import { assertEquals } from "https://deno.land/std@0.171.0/testing/asserts.ts";
 
 class Lenses {
-  static number = Mod.Match(/[0-9]+/)
+  static number  = Mod.Match(/[0-9]+/)
   static numbers = Mod.EachMatch(/[0-9]+/dg)
 
+  static urn = Mod.Match(/urn:[^ ]+/)
+  static protocol = Mod.Match(/protocol-[a-z]+/)
 }
 
 /*
@@ -45,6 +47,57 @@ Deno.test({
     }
   }
 });
+
+Deno.test({
+  name: 'Match: composition view',
+  fn () {
+    const urnPrococol = Lenses.urn.
+      composePrism(Lenses.protocol);
+
+    let tcases = [
+      { whole: '++ urn:protocol-foo ++', expected: 'protocol-foo' },
+      { whole: '++ urn:protocol-bar ++', expected: 'protocol-bar' },
+      { whole: '++ urn:protocol-baz ++', expected: 'protocol-baz' },
+    ]
+
+    for (const tcase of tcases) {
+      const focus = urnPrococol.view(tcase.whole);
+
+      assertEquals(focus, tcase.expected)
+    }
+  }
+})
+
+Deno.test({
+  name: 'Match: composition set',
+  fn () {
+    const urnPrococol = Lenses.urn.
+      composePrism(Lenses.protocol);
+
+    let tcases = [
+      {
+        whole: '++ urn:protocol-foo ++',
+        part: 'foo',
+        expected: '++ urn:foo ++'
+      },
+      {
+        whole: '++ urn:protocol-bar ++',
+        part: 'bar',
+        expected: '++ urn:bar ++'
+      },
+      {
+        whole: '++ urn:protocol-baz ++',
+        part: 'baz',
+        expected: '++ urn:baz ++'
+      },
+    ]
+
+    for (const tcase of tcases) {
+      const focus = urnPrococol.set(tcase.part, tcase.whole);
+      assertEquals(focus, tcase.expected)
+    }
+  }
+})
 
 /*
  * EachMatch
