@@ -1,5 +1,4 @@
-import type { Traversal } from "./types.ts";
-import { AbstractPrism } from "./types.ts";
+import { AbstractPrism, AbstractTraversal } from "./types.ts";
 
 /*
  * A prism that matches a regular expression (at most once) against a string.
@@ -52,7 +51,7 @@ export function EachMatch(pattern: RegExp): Traversal<string, string> {
     );
   }
 
-  return new class implements Traversal<string, string> {
+  return new class extends AbstractTraversal<string, string> {
     view(whole: string) {
       let parts: string[] = [];
 

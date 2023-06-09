@@ -6,6 +6,7 @@
 export interface Prism<Whole, Part> {
   view(whole: Whole): Part | null;
   set(newPart: Part, whole: Whole): Whole;
+  composePrism<SubPart>(secondPrism: Prism<Part, SubPart>): Prism<Whole, SubPart>;
 }
 
 export abstract class AbstractPrism<Whole, Part> implements Prism<Whole, Part> {
@@ -61,9 +62,73 @@ export abstract class AbstractPrism<Whole, Part> implements Prism<Whole, Part> {
 export interface Traversal<Whole, Part> {
   view(whole: Whole): Part[];
   modify(modifier: (part: Part) => Part, whole: Whole): Whole;
+  composePrism<SubPart>(prism: Prism<Part, SubPart>): Traversal<Whole, SubPart>;
 }
 
 export abstract class AbstractTraversal<Whole, Part> implements Traversal<Whole, Part> {
   abstract view(whole: Whole): Part[];
   abstract modify(modifier: (part: Part) => Part, whole: Whole): Whole;
+
+  composePrism<SubPart>(
+    prism: Prism<Part, SubPart>,
+  ): Traversal<Whole, SubPart> {
+    let self = this;
+
+    return new class extends AbstractTraversal<Whole, SubPart> implements Traversal<Whole, SubPart> {
+      view(whole: Whole): SubPart[] {
+        // traverse the whole, and find parts
+        const parts = self.view(whole);
+
+        const subparts: SubPart[] = [];
+
+        for (let part of parts) {
+          const subpart = prism.view(part);
+
+          // prisms can return null; do not preserve it
+          if (subpart !== null) {
+            subparts.push(subpart as SubPart);
+          }
+        }
+
+        return subparts;
+      }
+      modify(modifier: (subpart: SubPart) => SubPart, whole: Whole): Whole {
+        return self.modify((part: Part): Part => {
+          const subpart = prism.view(part)
+
+          if (subpart === null) {
+            // no inner part to transform
+            return part;
+          } else {
+            // modify the inner part, and set it back using the prism
+            return prism.set(modifier(subpart), part)
+          }
+        }, whole);
+      }
+    }();
+  }
+
+  composeTraversal<SubPart>(secondTraversal: Traversal<Part, SubPart>): Traversal<Whole, SubPart> {
+    let self = this;
+
+    return new class extends AbstractTraversal<Whole, SubPart> implements Traversal<Whole, SubPart> {
+      view(whole: Whole): SubPart[] {
+        // traverse the whole, and find parts
+        const parts = self.view(whole);
+
+        let subparts: SubPart[] = [];
+
+        for (let part of parts) {
+          subparts = subparts.concat(secondTraversal.view(part));
+        }
+
+        return subparts;
+      }
+      modify(modifier: (subpart: SubPart) => SubPart, whole: Whole): Whole {
+        return self.modify((part: Part): Part => {
+          return secondTraversal.modify(modifier, part);
+        }, whole);
+      }
+    }();
+  }
 }
