@@ -1,4 +1,4 @@
-import { AbstractPrism, AbstractTraversal } from "./types.ts";
+import { AbstractPrism, AbstractTraversal, Traversal } from "./types.ts";
 
 /*
  * A prism that matches a regular expression (at most once) against a string.
