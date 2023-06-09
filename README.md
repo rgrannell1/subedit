@@ -1,7 +1,7 @@
 
 # SubEdit [![Test](https://github.com/rgrannell1/subedit/actions/workflows/test.yaml/badge.svg)](https://github.com/rgrannell1/subedit/actions/workflows/test.yaml)
 
-A regular-expression optic library for composable text-editing.
+A regular-expression optic library for composable text-editing. See https://rgrannell.xyz/posts/composable-text-editing.html for details
 
 ## Optics
 
