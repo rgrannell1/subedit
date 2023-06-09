@@ -1,6 +1,5 @@
-
-import type { Prism, Traversal } from './types.ts';
-import { AbstractPrism } from './types.ts';
+import type { Traversal } from "./types.ts";
+import { AbstractPrism } from "./types.ts";
 
 /*
  * A prism that matches a regular expression (at most once) against a string.
@@ -8,14 +7,12 @@ import { AbstractPrism } from './types.ts';
  * - view: returns the matched string, or null if no match
  * - set: replaces the matched string with the new string, or returns the original string if no match
  */
-export function Match (pattern: RegExp) {
+export function MaybeMatch(pattern: RegExp) {
   return new class extends AbstractPrism<string, string> {
     view(whole: string): string | null {
       const matches = whole.match(pattern);
 
-      return matches === null || matches.length === 0
-        ? null
-        : matches[0];
+      return matches === null || matches.length === 0 ? null : matches[0];
     }
 
     set(newPart: string, whole: string) {
@@ -33,24 +30,26 @@ export function Match (pattern: RegExp) {
         newPart +
         whole.slice(idx + matches[0].length, whole.length);
     }
-  }
+  }();
 }
 
 /*
-  * A traversal that matches a regular expression against a string.
-  *
-  * - view: returns an array of all matched strings
-  * - modify: replaces all matched strings with the result of the modifier
-  *
-  */
-export function EachMatch (pattern: RegExp): Traversal<string, string> {
-
+ * A traversal that matches a regular expression against a string.
+ *
+ * - view: returns an array of all matched strings
+ * - modify: replaces all matched strings with the result of the modifier
+ */
+export function EachMatch(pattern: RegExp): Traversal<string, string> {
   if (!pattern.flags.includes("d")) {
-    throw new Error("EachMatch requires the 'd' flag to be set on the input pattern");
+    throw new Error(
+      "EachMatch requires the 'd' flag to be set on the input pattern",
+    );
   }
 
   if (!pattern.flags.includes("g")) {
-    throw new Error("EachMatch requires the 'g' flag to be set on the input pattern");
+    throw new Error(
+      "EachMatch requires the 'g' flag to be set on the input pattern",
+    );
   }
 
   return new class implements Traversal<string, string> {
@@ -85,23 +84,5 @@ export function EachMatch (pattern: RegExp): Traversal<string, string> {
 
       return parts.join("");
     }
-  }
-}
-
-/*
-  * A traversal that matches a regular expression against a string, and returns the groups.
-  *
-  * - view: returns an array of all matched strings
-  * - modify: replaces all matched strings with the result of the modifier
-  *
-  */
-export function Groups (pattern: RegExp): Traversal<string, string> {
-  return new class implements Traversal<string, string> {
-    view(whole: string) {
-      return [];
-    }
-    modify(modifier: (part: string) => string, whole: string) {
-      return whole;
-    }
-  }
+  }();
 }
