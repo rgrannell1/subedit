@@ -1,15 +1,32 @@
-
 # SubEdit
 
 A regular-expression optic library for composable text-editing.
 
 ## Optics
 
+SubEdit defines several optic-constructors; regular-expression parameterised functions that construct optics suitable for updating regular-expression matches in text.
+
+### MaybeMatch
+
+```ts
+SubEdit.MaybeMatch(regexp): Prism<string, string>
 ```
-Match(regexp):     Prism<string, string>
-EachMatch(regexp): Traversal<string, string>
-Groups(regexp):    Traversal<string, string>
+
+Construct a prism that:
+
+- Gets the first regular-expression match as a string (if present)
+- Overrides the first regular-expression match (if present)
+
+### EachMatch
+
+```ts
+SubEdit.EachMatch(pattern: RegExp): Traversal<string, string>
 ```
+
+Construct a traversal that:
+
+- Gets each regular-expression match as an array of strings
+- Applies a modifier function to each regular-expression match, allowing in-place update
 
 ## License
 
@@ -17,9 +34,19 @@ The MIT License
 
 Copyright (c) 2023 Róisín Grannell
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
