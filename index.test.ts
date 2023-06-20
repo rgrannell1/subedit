@@ -170,3 +170,21 @@ Deno.test({
     }
   },
 });
+
+Deno.test({
+  name: "MaybeMatch: Lenses.number.set",
+  fn() {
+    let tcases = [
+      { whole: "", newPart: "noop", expected: "" },
+      { whole: "http://google.com", newPart: "floogle", expected: "http://floogle.com" }
+    ];
+
+    const url = (idx: number) => Mod.MaybeGroupMatch(/(.+)\:\/\/(.+).com/d, idx)
+
+    for (const tcase of tcases) {
+      const updated = url(2).set(tcase.newPart, tcase.whole) as any;
+
+      assertEquals(updated, tcase.expected);
+    }
+  },
+});
