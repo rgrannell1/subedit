@@ -85,3 +85,48 @@ export function EachMatch(pattern: RegExp): Traversal<string, string> {
     }
   }();
 }
+
+/*
+  * A prism that matches a regular expression with capture groups (at most once) against a string.
+` *
+  * - view: returns the matched capture-group, or null if no match
+  * - set: replaces the matched capture-group with the new string, or returns the original string if no match
+  *
+  */
+export function MaybeGroupMatch(pattern: RegExp, index: number) {
+  if (!pattern.flags.includes("d")) {
+    throw new Error(
+      "MaybeGroupMatch requires the 'd' flag to be set on the input pattern",
+    );
+  }
+
+  return new class extends AbstractPrism<string, string> {
+    view(whole: string): string | null {
+      const matches = whole.match(pattern);
+
+      return matches === null || matches.length < index ? null : matches[index];
+    }
+
+    set(newPart: string, whole: string) {
+      const matches = whole.match(pattern) as RegExpMatchArray & {
+        indices: number[][]
+      };
+
+      if (
+        matches === null || matches.length === 0 || matches?.index === undefined
+      ) {
+        return whole;
+      }
+
+      if (matches.indices.length < index) {
+        return whole;
+      }
+
+      let [groupStart, groupEnd] = matches.indices[index];
+
+      return whole.slice(0, groupStart) +
+        newPart +
+        whole.slice(groupEnd, whole.length);
+    }
+  }();
+}

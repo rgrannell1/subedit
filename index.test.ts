@@ -149,3 +149,24 @@ Deno.test({
     }
   },
 });
+
+Deno.test({
+  name: "MaybeGroupMatch: view",
+  fn() {
+    let tcases = [
+      { whole: "http://example.com", groups: ["http", "example.com"] },
+    ];
+
+    const url = (idx: number) => Mod.MaybeGroupMatch(/(.+)\:\/\/(.+)/d, idx)
+
+    assertEquals(url(1).view(""), null);
+
+    for (const tcase of tcases) {
+      const firstFocus = url(1).view(tcase.whole) as any;
+      const secondFocus = url(2).view(tcase.whole) as any;
+
+      assertEquals(firstFocus, tcase.groups[0]);
+      assertEquals(secondFocus, tcase.groups[1]);
+    }
+  },
+});
