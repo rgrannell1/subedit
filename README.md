@@ -49,7 +49,6 @@ SubEdit.MaybeGroupMatch(pattern: RegExp, index: number): Prism<string, string>
 
 Construct a prism that:
 
-
 - Gets a capture-group from the first regular-expression match as a string (if present)
 - Overrides the capture-group in the first regular-expression match (if present)
 
