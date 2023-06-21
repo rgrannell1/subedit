@@ -29,6 +29,17 @@ Construct a traversal that:
 - Gets each regular-expression match as an array of strings
 - Applies a modifier function to each regular-expression match, allowing in-place update
 
+### EachGroupMatch
+
+```ts
+SubEdit.EachGroupMatch(pattern: RegExp, index: number): Traversal<string, string>
+```
+
+Construct a traversal that:
+
+- Gets each regular-expression match's nth capture-group as an array of strings
+- Applies a modifier function to each regular-expression's nth capture-group match, allowing in-place update
+
 ## License
 
 The MIT License

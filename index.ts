@@ -130,3 +130,57 @@ export function MaybeGroupMatch(pattern: RegExp, index: number) {
     }
   }();
 }
+
+/*
+ * A traversal that matches a regular expression's capture-group against a string.
+ *
+ * - view: returns an array of all matched strings
+ * - modify: replaces all matched strings with the result of the modifier
+ */
+export function EachGroupMatch(pattern: RegExp, index: number): Traversal<string, string> {
+  if (!pattern.flags.includes("d")) {
+    throw new Error(
+      "EachMatch requires the 'd' flag to be set on the input pattern",
+    );
+  }
+
+  if (!pattern.flags.includes("g")) {
+    throw new Error(
+      "EachMatch requires the 'g' flag to be set on the input pattern",
+    );
+  }
+
+  return new class extends AbstractTraversal<string, string> {
+    view(whole: string) {
+      let parts: string[] = [];
+
+      for (const match of whole.matchAll(pattern)) {
+        parts.push(match[index]);
+      }
+
+      return parts;
+    }
+    modify(modifier: (part: string) => string, whole: string) {
+      let parts: string[] = [];
+      let start = 0;
+
+      for (const match of whole.matchAll(pattern)) {
+        const text = match[index];
+        const boundaries = (match as any).indices[index];
+
+        // push text from the previous match up to this match
+        parts.push(whole.slice(start, boundaries[0]));
+
+        // push transformed text
+        parts.push(modifier(text));
+
+        start = boundaries[1];
+      }
+
+      // push the post-match remaining text
+      parts.push(whole.slice(start, whole.length));
+
+      return parts.join("");
+    }
+  }();
+}

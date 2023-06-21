@@ -2,19 +2,21 @@ import * as Mod from "./index.ts";
 
 import { assertEquals } from "https://deno.land/std@0.171.0/testing/asserts.ts";
 
-class Lenses {
+class Optics {
   static number = Mod.MaybeMatch(/[0-9]+/);
   static numbers = Mod.EachMatch(/[0-9]+/dg);
 
   static urn = Mod.MaybeMatch(/urn:[^ ]+/);
   static protocol = Mod.MaybeMatch(/protocol-[a-z]+/);
+
+  static lastDigits = Mod.EachGroupMatch(/([0-9]+)([0-9])/dg, 2);
 }
 
 /*
  * MaybeMatch
  */
 Deno.test({
-  name: "MaybeMatch: Lenses.number.view",
+  name: "MaybeMatch: Optics.number.view",
   fn() {
     let tcases = [
       { whole: "", part: null },
@@ -23,14 +25,14 @@ Deno.test({
     ];
 
     for (const tcase of tcases) {
-      const focus = Lenses.number.view(tcase.whole);
+      const focus = Optics.number.view(tcase.whole);
       assertEquals(focus, tcase.part);
     }
   },
 });
 
 Deno.test({
-  name: "MaybeMatch: Lenses.number.set",
+  name: "MaybeMatch: Optics.number.set",
   fn() {
     let tcases = [
       { whole: "", newPart: "noop", expected: "" },
@@ -39,7 +41,7 @@ Deno.test({
     ];
 
     for (const tcase of tcases) {
-      const newWhole = Lenses.number.set(tcase.newPart, tcase.whole);
+      const newWhole = Optics.number.set(tcase.newPart, tcase.whole);
       assertEquals(newWhole, tcase.expected);
     }
   },
@@ -48,8 +50,8 @@ Deno.test({
 Deno.test({
   name: "MaybeMatch: composition view",
   fn() {
-    const urnPrococol = Lenses.urn
-      .composePrism(Lenses.protocol);
+    const urnPrococol = Optics.urn
+      .composePrism(Optics.protocol);
 
     let tcases = [
       { whole: "++ urn:protocol-foo ++", expected: "protocol-foo" },
@@ -68,8 +70,8 @@ Deno.test({
 Deno.test({
   name: "MaybeMatch: composition set",
   fn() {
-    const urnPrococol = Lenses.urn
-      .composePrism(Lenses.protocol);
+    const urnPrococol = Optics.urn
+      .composePrism(Optics.protocol);
 
     let tcases = [
       {
@@ -100,7 +102,7 @@ Deno.test({
  * EachMatch
  */
 Deno.test({
-  name: "EachMatch: Lenses.number.view",
+  name: "EachMatch: Optics.number.view",
   fn() {
     let tcases = [
       { whole: "", parts: [] },
@@ -110,14 +112,14 @@ Deno.test({
     ];
 
     for (const tcase of tcases) {
-      const focus = Lenses.numbers.view(tcase.whole);
+      const focus = Optics.numbers.view(tcase.whole);
       assertEquals(focus, tcase.parts);
     }
   },
 });
 
 Deno.test({
-  name: "EachMatch: Lenses.number.modify",
+  name: "EachMatch: Optics.number.modify",
   fn() {
     let tcases = [
       {
@@ -144,7 +146,7 @@ Deno.test({
     ];
 
     for (const tcase of tcases) {
-      const newWhole = Lenses.numbers.modify(tcase.modifier, tcase.whole);
+      const newWhole = Optics.numbers.modify(tcase.modifier, tcase.whole);
       assertEquals(newWhole, tcase.expected);
     }
   },
@@ -172,7 +174,7 @@ Deno.test({
 });
 
 Deno.test({
-  name: "MaybeMatch: Lenses.number.set",
+  name: "MaybeMatch: Optics.number.set",
   fn() {
     let tcases = [
       { whole: "", newPart: "noop", expected: "" },
@@ -185,6 +187,49 @@ Deno.test({
       const updated = url(2).set(tcase.newPart, tcase.whole) as any;
 
       assertEquals(updated, tcase.expected);
+    }
+  },
+});
+
+Deno.test({
+  name: "EachGroupMatch: view",
+  fn() {
+    let tcases = [
+      { whole: "", parts: [] },
+      { whole: "123\n456", parts: ["3", "6"] },
+    ];
+
+    for (const tcase of tcases) {
+      const focus = Optics.lastDigits.view(tcase.whole);
+      assertEquals(focus, tcase.parts);
+    }
+  },
+});
+
+Deno.test({
+  name: "EachGroupMatch: modify",
+  fn() {
+    let tcases = [
+      {
+        whole: "",
+        expected: "",
+        modifier() {
+          return "noop";
+        },
+      },
+      {
+        whole: "123\n456",
+        expected: "129\n459",
+        modifier() {
+          return "9";
+        },
+      }
+    ];
+
+
+    for (const tcase of tcases) {
+      const newWhole = Optics.lastDigits.modify(tcase.modifier, tcase.whole);
+      assertEquals(newWhole, tcase.expected);
     }
   },
 });
