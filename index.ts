@@ -121,7 +121,7 @@ export function MaybeGroupMatch(pattern: RegExp, index: number) {
 
     set(newPart: string, whole: string) {
       const matches = whole.match(pattern) as RegExpMatchArray & {
-        indices: number[][]
+        indices: number[][];
       };
 
       if (
@@ -149,7 +149,10 @@ export function MaybeGroupMatch(pattern: RegExp, index: number) {
  * - view: returns an array of all matched strings
  * - modify: replaces all matched strings with the result of the modifier
  */
-export function EachGroupMatch(pattern: RegExp, index: number): Traversal<string, string> {
+export function EachGroupMatch(
+  pattern: RegExp,
+  index: number,
+): Traversal<string, string> {
   if (!pattern.flags.includes("d")) {
     throw new Error(
       "EachMatch requires the 'd' flag to be set on the input pattern",

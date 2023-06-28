@@ -1,11 +1,21 @@
-
 # SubEdit [![Test](https://github.com/rgrannell1/subedit/actions/workflows/test.yaml/badge.svg)](https://github.com/rgrannell1/subedit/actions/workflows/test.yaml)
 
-A regular-expression optic library for composable text-editing. See https://rgrannell.xyz/posts/composable-text-editing.html for details
+A regular-expression optic library for composable text-editing. See
+https://rgrannell.xyz/posts/composable-text-editing.html for details
+
+## Example
+
+```md
+# test heading
+
+this is some text, with a [[wikilink#foo]]
+```
 
 ## Optics
 
-SubEdit defines several optic-constructors; regular-expression parameterised functions that construct optics suitable for updating regular-expression matches in text.
+SubEdit defines several optic-constructors; parameterised functions that
+construct prisms or traversals suitable for viewing / updating
+regular-expression matches in text.
 
 ### MaybeMatch
 
@@ -27,8 +37,8 @@ SubEdit.EachMatch(pattern: RegExp): Traversal<string, string>
 Construct a traversal that:
 
 - Gets each regular-expression match as an array of strings
-- Applies a modifier function to each regular-expression match, allowing in-place update
-
+- Applies a modifier function to each regular-expression match, allowing
+  in-place update
 
 ### EachGroupMatch
 
@@ -39,7 +49,8 @@ SubEdit.EachGroupMatch(pattern: RegExp, index: number): Traversal<string, string
 Construct a traversal that:
 
 - Gets each regular-expression match's nth capture-group as an array of strings
-- Applies a modifier function to each regular-expression's nth capture-group match, allowing in-place update
+- Applies a modifier function to each regular-expression's nth capture-group
+  match, allowing in-place update
 
 ### MaybeGroupMatch
 
@@ -49,7 +60,8 @@ SubEdit.MaybeGroupMatch(pattern: RegExp, index: number): Prism<string, string>
 
 Construct a prism that:
 
-- Gets a capture-group from the first regular-expression match as a string (if present)
+- Gets a capture-group from the first regular-expression match as a string (if
+  present)
 - Overrides the capture-group in the first regular-expression match (if present)
 
 ## License

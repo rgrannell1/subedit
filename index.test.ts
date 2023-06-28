@@ -159,7 +159,7 @@ Deno.test({
       { whole: "http://example.com", groups: ["http", "example.com"] },
     ];
 
-    const url = (idx: number) => Mod.MaybeGroupMatch(/(.+)\:\/\/(.+)/d, idx)
+    const url = (idx: number) => Mod.MaybeGroupMatch(/(.+)\:\/\/(.+)/d, idx);
 
     assertEquals(url(1).view(""), null);
 
@@ -178,10 +178,15 @@ Deno.test({
   fn() {
     let tcases = [
       { whole: "", newPart: "noop", expected: "" },
-      { whole: "http://google.com", newPart: "floogle", expected: "http://floogle.com" }
+      {
+        whole: "http://google.com",
+        newPart: "floogle",
+        expected: "http://floogle.com",
+      },
     ];
 
-    const url = (idx: number) => Mod.MaybeGroupMatch(/(.+)\:\/\/(.+).com/d, idx)
+    const url = (idx: number) =>
+      Mod.MaybeGroupMatch(/(.+)\:\/\/(.+).com/d, idx);
 
     for (const tcase of tcases) {
       const updated = url(2).set(tcase.newPart, tcase.whole) as any;
@@ -223,9 +228,8 @@ Deno.test({
         modifier() {
           return "9";
         },
-      }
+      },
     ];
-
 
     for (const tcase of tcases) {
       const newWhole = Optics.lastDigits.modify(tcase.modifier, tcase.whole);

@@ -7,7 +7,9 @@ export interface Prism<Whole, Part> {
   view(whole: Whole): Part | null;
   set(newPart: Part, whole: Whole): Whole;
   modify(modifier: (part: Part) => Part, whole: Whole): Whole;
-  composePrism<SubPart>(secondPrism: Prism<Part, SubPart>): Prism<Whole, SubPart>;
+  composePrism<SubPart>(
+    secondPrism: Prism<Part, SubPart>,
+  ): Prism<Whole, SubPart>;
 }
 
 export abstract class AbstractPrism<Whole, Part> implements Prism<Whole, Part> {
@@ -29,7 +31,8 @@ export abstract class AbstractPrism<Whole, Part> implements Prism<Whole, Part> {
   ): Prism<Whole, SubPart> {
     let self = this;
 
-    return new class extends AbstractPrism<Whole, SubPart> implements Prism<Whole, SubPart> {
+    return new class extends AbstractPrism<Whole, SubPart>
+      implements Prism<Whole, SubPart> {
       /*
        * Retrieve the part from the first, then from the second. Account for nulls.
        */
@@ -64,7 +67,6 @@ export abstract class AbstractPrism<Whole, Part> implements Prism<Whole, Part> {
   }
 }
 
-
 /*
  * A traversal is an optic (sorry if this is misnamed!) that:
  * - views 0...n parts
@@ -76,7 +78,8 @@ export interface Traversal<Whole, Part> {
   composePrism<SubPart>(prism: Prism<Part, SubPart>): Traversal<Whole, SubPart>;
 }
 
-export abstract class AbstractTraversal<Whole, Part> implements Traversal<Whole, Part> {
+export abstract class AbstractTraversal<Whole, Part>
+  implements Traversal<Whole, Part> {
   abstract view(whole: Whole): Part[];
   abstract modify(modifier: (part: Part) => Part, whole: Whole): Whole;
 
@@ -85,7 +88,8 @@ export abstract class AbstractTraversal<Whole, Part> implements Traversal<Whole,
   ): Traversal<Whole, SubPart> {
     let self = this;
 
-    return new class extends AbstractTraversal<Whole, SubPart> implements Traversal<Whole, SubPart> {
+    return new class extends AbstractTraversal<Whole, SubPart>
+      implements Traversal<Whole, SubPart> {
       view(whole: Whole): SubPart[] {
         // traverse the whole, and find parts
         const parts = self.view(whole);
@@ -105,24 +109,27 @@ export abstract class AbstractTraversal<Whole, Part> implements Traversal<Whole,
       }
       modify(modifier: (subpart: SubPart) => SubPart, whole: Whole): Whole {
         return self.modify((part: Part): Part => {
-          const subpart = prism.view(part)
+          const subpart = prism.view(part);
 
           if (subpart === null) {
             // no inner part to transform
             return part;
           } else {
             // modify the inner part, and set it back using the prism
-            return prism.set(modifier(subpart), part)
+            return prism.set(modifier(subpart), part);
           }
         }, whole);
       }
     }();
   }
 
-  composeTraversal<SubPart>(secondTraversal: Traversal<Part, SubPart>): Traversal<Whole, SubPart> {
+  composeTraversal<SubPart>(
+    secondTraversal: Traversal<Part, SubPart>,
+  ): Traversal<Whole, SubPart> {
     let self = this;
 
-    return new class extends AbstractTraversal<Whole, SubPart> implements Traversal<Whole, SubPart> {
+    return new class extends AbstractTraversal<Whole, SubPart>
+      implements Traversal<Whole, SubPart> {
       view(whole: Whole): SubPart[] {
         // traverse the whole, and find parts
         const parts = self.view(whole);
