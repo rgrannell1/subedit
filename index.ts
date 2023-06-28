@@ -100,6 +100,18 @@ export function MaybeGroupMatch(pattern: RegExp, index: number) {
     );
   }
 
+  if (!Number.isInteger(index)) {
+    throw new Error(
+      "MaybeGroupMatch requires an integer index to be specified",
+    );
+  }
+
+  if (index < 0) {
+    throw new Error(
+      "MaybeGroupMatch requires a non-negative integer index to be specified",
+    );
+  }
+
   return new class extends AbstractPrism<string, string> {
     view(whole: string): string | null {
       const matches = whole.match(pattern);

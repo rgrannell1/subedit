@@ -6,12 +6,23 @@
 export interface Prism<Whole, Part> {
   view(whole: Whole): Part | null;
   set(newPart: Part, whole: Whole): Whole;
+  modify(modifier: (part: Part) => Part, whole: Whole): Whole;
   composePrism<SubPart>(secondPrism: Prism<Part, SubPart>): Prism<Whole, SubPart>;
 }
 
 export abstract class AbstractPrism<Whole, Part> implements Prism<Whole, Part> {
   abstract view(whole: Whole): Part | null;
   abstract set(newPart: Part, whole: Whole): Whole;
+
+  modify(modifier: (part: Part) => Part, whole: Whole): Whole {
+    const presentPart = this.view(whole);
+
+    if (presentPart === null) {
+      return whole;
+    }
+
+    return this.set(modifier(presentPart), whole);
+  }
 
   composePrism<SubPart>(
     secondPrism: Prism<Part, SubPart>,
