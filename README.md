@@ -3,14 +3,6 @@
 A regular-expression optic library for composable text-editing. See
 https://rgrannell.xyz/posts/composable-text-editing.html for details
 
-## Example
-
-```md
-# test heading
-
-this is some text, with a [[wikilink#foo]]
-```
-
 ## Optics
 
 SubEdit defines several optic-constructors; parameterised functions that
