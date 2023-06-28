@@ -1,4 +1,4 @@
-import { AbstractPrism, AbstractTraversal, Traversal } from "./types.ts";
+import { StringPrism, StringTraversal, Prism, Traversal, RegExpMatchArrayIndexed } from "./types.ts";
 
 /*
  * A prism that matches a regular expression (at most once) against a string.
@@ -7,11 +7,21 @@ import { AbstractPrism, AbstractTraversal, Traversal } from "./types.ts";
  * - set: replaces the matched string with the new string, or returns the original string if no match
  */
 export function MaybeMatch(pattern: RegExp) {
-  return new class extends AbstractPrism<string, string> {
+  return new class extends StringPrism {
     view(whole: string): string | null {
       const matches = whole.match(pattern);
 
       return matches === null || matches.length === 0 ? null : matches[0];
+    }
+
+    indices(whole: string): number[] | null {
+      const matches = whole.match(pattern) as RegExpMatchArrayIndexed;
+
+      if (matches === null || matches.length === 0) {
+        return null;
+      }
+
+      return matches.indices[0];
     }
 
     set(newPart: string, whole: string) {
@@ -38,7 +48,7 @@ export function MaybeMatch(pattern: RegExp) {
  * - view: returns an array of all matched strings
  * - modify: replaces all matched strings with the result of the modifier
  */
-export function EachMatch(pattern: RegExp): Traversal<string, string> {
+export function EachMatch(pattern: RegExp): StringTraversal {
   if (!pattern.flags.includes("d")) {
     throw new Error(
       "EachMatch requires the 'd' flag to be set on the input pattern",
@@ -51,7 +61,7 @@ export function EachMatch(pattern: RegExp): Traversal<string, string> {
     );
   }
 
-  return new class extends AbstractTraversal<string, string> {
+  return new class extends StringTraversal {
     view(whole: string) {
       let parts: string[] = [];
 
@@ -61,6 +71,17 @@ export function EachMatch(pattern: RegExp): Traversal<string, string> {
 
       return parts;
     }
+    indices(whole: string): number[][] {
+      let slices: number[][] = [];
+
+      for (const match of whole.matchAll(pattern)) {
+        const matchIndices = (match as RegExpMatchArrayIndexed).indices[0];
+        slices.push(matchIndices);
+      }
+
+      return slices;
+    }
+
     modify(modifier: (part: string) => string, whole: string) {
       let parts: string[] = [];
       let start = 0;
@@ -112,11 +133,28 @@ export function MaybeGroupMatch(pattern: RegExp, index: number) {
     );
   }
 
-  return new class extends AbstractPrism<string, string> {
+  return new class extends StringPrism {
     view(whole: string): string | null {
       const matches = whole.match(pattern);
 
-      return matches === null || matches.length < index ? null : matches[index];
+      if (matches === null || matches.length < index || matches[index] === undefined) {
+        return null;
+      }
+
+      return matches[index];
+    }
+    indices(whole: string): number[] | null {
+      const matches = whole.match(pattern) as RegExpMatchArrayIndexed;
+
+      if (matches === null || matches.length === 0) {
+        return null;
+      }
+
+      if (matches.indices.length < index) {
+        return null;
+      }
+
+      return matches.indices[index];
     }
 
     set(newPart: string, whole: string) {
@@ -165,7 +203,7 @@ export function EachGroupMatch(
     );
   }
 
-  return new class extends AbstractTraversal<string, string> {
+  return new class extends StringTraversal {
     view(whole: string) {
       let parts: string[] = [];
 
@@ -174,6 +212,16 @@ export function EachGroupMatch(
       }
 
       return parts;
+    }
+    indices(whole: string): number[][] {
+      let slices: number[][] = [];
+
+      for (const match of whole.matchAll(pattern)) {
+        const matchIndices = (match as RegExpMatchArrayIndexed).indices[index];
+        slices.push(matchIndices);
+      }
+
+      return slices;
     }
     modify(modifier: (part: string) => string, whole: string) {
       let parts: string[] = [];
@@ -198,4 +246,9 @@ export function EachGroupMatch(
       return parts.join("");
     }
   }();
+}
+
+
+export class Traversals {
+
 }

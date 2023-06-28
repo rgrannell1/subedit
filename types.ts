@@ -150,3 +150,15 @@ export abstract class AbstractTraversal<Whole, Part>
     }();
   }
 }
+
+export abstract class StringPrism extends AbstractPrism<string, string> {
+  abstract indices(whole: string): number[] | null;
+}
+
+export abstract class StringTraversal extends AbstractTraversal<string, string> {
+  abstract indices(whole: string): number[][];
+}
+
+export type RegExpMatchArrayIndexed = RegExpMatchArray & {
+  indices: number[][];
+};
