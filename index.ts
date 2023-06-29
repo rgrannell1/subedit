@@ -1,4 +1,12 @@
-import { StringPrism, StringTraversal, Prism, Traversal, RegExpMatchArrayIndexed } from "./types.ts";
+import {
+  AbstractPrism,
+  AbstractTraversal,
+  Prism,
+  RegExpMatchArrayIndexed,
+  StringPrism,
+  StringTraversal,
+  Traversal,
+} from "./types.ts";
 
 /*
  * A prism that matches a regular expression (at most once) against a string.
@@ -137,7 +145,10 @@ export function MaybeGroupMatch(pattern: RegExp, index: number) {
     view(whole: string): string | null {
       const matches = whole.match(pattern);
 
-      if (matches === null || matches.length < index || matches[index] === undefined) {
+      if (
+        matches === null || matches.length < index ||
+        matches[index] === undefined
+      ) {
         return null;
       }
 

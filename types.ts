@@ -155,7 +155,8 @@ export abstract class StringPrism extends AbstractPrism<string, string> {
   abstract indices(whole: string): number[] | null;
 }
 
-export abstract class StringTraversal extends AbstractTraversal<string, string> {
+export abstract class StringTraversal
+  extends AbstractTraversal<string, string> {
   abstract indices(whole: string): number[][];
 }
 
