@@ -1,4 +1,3 @@
-
 import * as SubEdit from "../src/mod.ts";
 import * as Peach from "../../peach.ts/src/mod.ts";
 import { assertEquals } from "https://deno.land/std@0.171.0/testing/asserts.ts";
@@ -8,7 +7,7 @@ const sampleNumbers = Peach.String.from(
   Peach.Number.uniform(1, 10),
 );
 
-const sampleNumberPairs = Peach.Array.concat(sampleNumbers, sampleNumbers)
+const sampleNumberPairs = Peach.Array.concat(sampleNumbers, sampleNumbers);
 
 // ++++ MaybeMatch ++++ //
 Deno.test({
@@ -23,7 +22,8 @@ Deno.test({
 });
 
 Deno.test({
-  name: "MaybeMatch.view: if the pattern matches the full string, .view is idempotent",
+  name:
+    "MaybeMatch.view: if the pattern matches the full string, .view is idempotent",
   fn() {
     const prism = SubEdit.MaybeMatch(/[0-9]+/d);
 
@@ -34,7 +34,8 @@ Deno.test({
 });
 
 Deno.test({
-  name: "MaybeMatch.view: if the pattern matches the first n characters in a string, .view returns a string prefix",
+  name:
+    "MaybeMatch.view: if the pattern matches the first n characters in a string, .view returns a string prefix",
   fn() {
     for (const whole of Peach.Array.from(sampleNumbers, 100)()) {
       const prefixSize = Peach.Number.uniform(0, 100)();
@@ -45,7 +46,7 @@ Deno.test({
       );
 
       if (part.length < prefixSize) {
-        continue
+        continue;
       }
 
       assertEquals(prism.view(whole), part);
@@ -59,13 +60,14 @@ Deno.test({
     const prism = SubEdit.MaybeMatch(/[a-z]+/d);
 
     for (const whole of Peach.Array.from(sampleNumbers, 100)()) {
-      assertEquals(prism.set('never', whole), whole);
+      assertEquals(prism.set("never", whole), whole);
     }
   },
 });
 
 Deno.test({
-  name: "MaybeMatch.set: if the pattern always entirely matches, .set returns the part provided",
+  name:
+    "MaybeMatch.set: if the pattern always entirely matches, .set returns the part provided",
   fn() {
     const prism = SubEdit.MaybeMatch(/[0-9]+/d);
 
@@ -77,7 +79,8 @@ Deno.test({
 
 // ++++ MaybeGroupMatch ++++ //
 Deno.test({
-  name: "MaybeGroupMatch.view: if the pattern never matches, .view is nulpotent",
+  name:
+    "MaybeGroupMatch.view: if the pattern never matches, .view is nulpotent",
   fn() {
     const prism = SubEdit.MaybeGroupMatch(/[a-z]+/d, 1);
 
@@ -88,7 +91,8 @@ Deno.test({
 });
 
 Deno.test({
-  name: "MaybeGroupMatch.view: if the pattern matches the full string, .view is idempotent",
+  name:
+    "MaybeGroupMatch.view: if the pattern matches the full string, .view is idempotent",
   fn() {
     const prism = SubEdit.MaybeGroupMatch(/([0-9]+)/d, 1);
 
@@ -99,7 +103,8 @@ Deno.test({
 });
 
 Deno.test({
-  name: "MaybeGroupMatch.view: if the pattern matches the first n characters in a string, .view returns a string prefix",
+  name:
+    "MaybeGroupMatch.view: if the pattern matches the first n characters in a string, .view returns a string prefix",
   fn() {
     for (const whole of Peach.Array.from(sampleNumbers, 100)()) {
       const prefixSize = Peach.Number.uniform(0, 100)();
@@ -107,11 +112,11 @@ Deno.test({
 
       const prism = SubEdit.MaybeGroupMatch(
         new RegExp(`([0-9]{${prefixSize}})`, "d"),
-        1
+        1,
       );
 
       if (part.length < prefixSize) {
-        continue
+        continue;
       }
 
       assertEquals(prism.view(whole), part);
@@ -134,21 +139,20 @@ Deno.test({
   },
 });
 
-
-
 Deno.test({
   name: "MaybeGroupMatch.set: if the pattern never matches, .set is idempotent",
   fn() {
     const prism = SubEdit.MaybeGroupMatch(/([a-z]+)/d, 1);
 
     for (const whole of Peach.Array.from(sampleNumbers, 100)()) {
-      assertEquals(prism.set('never', whole), whole);
+      assertEquals(prism.set("never", whole), whole);
     }
   },
 });
 
 Deno.test({
-  name: "MaybeGroupMatch.set: if the pattern always entirely matches, .set returns the part provided",
+  name:
+    "MaybeGroupMatch.set: if the pattern always entirely matches, .set returns the part provided",
   fn() {
     const prism = SubEdit.MaybeGroupMatch(/([0-9]+)/d, 1);
 
@@ -164,13 +168,29 @@ Deno.test({
     const firstFocusPrism = SubEdit.MaybeGroupMatch(/([0-9]+)-([0-9]+)/d, 1);
     const secondFocusPrism = SubEdit.MaybeGroupMatch(/([0-9]+)-([0-9]+)/d, 2);
 
-    const samples = Peach.Array.concat(sampleNumbers, sampleNumbers, sampleNumbers, sampleNumbers)
+    const samples = Peach.Array.concat(
+      sampleNumbers,
+      sampleNumbers,
+      sampleNumbers,
+      sampleNumbers,
+    );
 
-    for (const [first, second, firstPart, secondPart] of Peach.Array.from(samples, 100)()) {
+    for (
+      const [first, second, firstPart, secondPart] of Peach.Array.from(
+        samples,
+        100,
+      )()
+    ) {
       const whole = `${first}-${second}`;
 
-      assertEquals(firstFocusPrism.set(firstPart, whole), `${firstPart}-${second}`);
-      assertEquals(secondFocusPrism.set(secondPart, whole), `${first}-${secondPart}`);
+      assertEquals(
+        firstFocusPrism.set(firstPart, whole),
+        `${firstPart}-${second}`,
+      );
+      assertEquals(
+        secondFocusPrism.set(secondPart, whole),
+        `${first}-${secondPart}`,
+      );
     }
   },
 });

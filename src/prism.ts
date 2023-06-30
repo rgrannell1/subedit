@@ -41,7 +41,9 @@ export function MaybeMatch(pattern: RegExp) {
 
       const idx = matches.index;
 
-      return `${whole.slice(0, idx)}${newPart}${whole.slice(idx + matches[0].length, whole.length)}`
+      return `${whole.slice(0, idx)}${newPart}${
+        whole.slice(idx + matches[0].length, whole.length)
+      }`;
     }
   }();
 }

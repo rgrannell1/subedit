@@ -60,9 +60,8 @@ export abstract class AbstractPrism<Whole, Part> implements Prism<Whole, Part> {
           return whole;
         }
 
-        // TODO check types
         return self.set(
-          secondPrism.set(newPart, firstPart) as Part,
+          secondPrism.set(newPart, firstPart),
           whole,
         );
       }
