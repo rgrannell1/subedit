@@ -12,6 +12,10 @@ export interface Prism<Whole, Part> {
   ): Prism<Whole, SubPart>;
 }
 
+/*
+ * Partial implementation of the prism interface, leaving view and set abstract
+ *
+ */
 export abstract class AbstractPrism<Whole, Part> implements Prism<Whole, Part> {
   abstract view(whole: Whole): Part | null;
   abstract set(newPart: Part, whole: Whole): Whole;
@@ -78,6 +82,10 @@ export interface Traversal<Whole, Part> {
   composePrism<SubPart>(prism: Prism<Part, SubPart>): Traversal<Whole, SubPart>;
 }
 
+/*
+ * Partial implementation of the traversal interface, leaving view and modify abstract
+ *
+ */
 export abstract class AbstractTraversal<Whole, Part>
   implements Traversal<Whole, Part> {
   abstract view(whole: Whole): Part[];

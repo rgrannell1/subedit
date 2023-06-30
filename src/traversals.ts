@@ -1,6 +1,18 @@
 import { AbstractTraversal, Traversal } from "./types.ts";
 
+/**
+ * Static methods for traversals
+ *
+ */
 export class Traversals {
+
+  /**
+   * Construct a traversal that joins the views of multiple traversals.
+   *
+   * - view: returns the concatenation of the views of each traversal
+   * - modify: applies the modifier to the view of each traversal
+   *
+   */
   static union<Whole, Part>(...traversals: Traversal<Whole, Part>[]) {
     return new class extends AbstractTraversal<Whole, Part> {
       view(whole: Whole): Part[] {
