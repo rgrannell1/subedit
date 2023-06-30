@@ -110,7 +110,7 @@ export function MaybeGroupMatch(pattern: RegExp, index: number) {
         return whole;
       }
 
-      if (matches.indices.length < index) {
+      if (matches.indices.length <= index) {
         return whole;
       }
 
