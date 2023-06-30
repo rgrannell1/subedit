@@ -84,3 +84,22 @@ Deno.test({
     }
   },
 });
+
+Deno.test({
+  name: "EachMatch.modify: elementwise uppercasing is the same as String.toUpperCase",
+  fn() {
+    const traversal = SubEdit.EachMatch(/polo/gd);
+    const dialogue = Peach.String.from(
+      Peach.Logic.oneOf(Peach.Number.uniform, ['marco', 'polo']),
+      Peach.Number.uniform(1, 10))
+
+    for (const whole of Peach.Array.from(dialogue, 100)()) {
+      const updated = traversal.modify((polo: string) => {
+        return polo.toUpperCase();
+      }, whole);
+
+      const replaced = whole.replace(/polo/g, 'POLO')
+      assertEquals(updated, replaced);
+    }
+  },
+});
