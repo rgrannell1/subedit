@@ -1,4 +1,4 @@
-import * as Mod from "./index.ts";
+import * as Mod from "../src/mod.ts";
 
 import { assertEquals } from "https://deno.land/std@0.171.0/testing/asserts.ts";
 
