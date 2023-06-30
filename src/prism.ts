@@ -7,6 +7,12 @@ import { RegExpMatchArrayIndexed, StringPrism } from "./types.ts";
  * - set: replaces the matched string with the new string, or returns the original string if no match
  */
 export function MaybeMatch(pattern: RegExp) {
+  if (pattern.flags.includes("g")) {
+    throw new Error(
+      "MaybeMatch does not support the 'g' flag on the input pattern",
+    );
+  }
+
   return new class extends StringPrism {
     view(whole: string): string | null {
       const matches = whole.match(pattern);
@@ -25,7 +31,7 @@ export function MaybeMatch(pattern: RegExp) {
     }
 
     set(newPart: string, whole: string) {
-      const matches = whole.match(pattern);
+      const matches = pattern.exec(whole);
 
       if (
         matches === null || matches.length === 0 || matches?.index === undefined
@@ -35,9 +41,7 @@ export function MaybeMatch(pattern: RegExp) {
 
       const idx = matches.index;
 
-      return whole.slice(0, idx) +
-        newPart +
-        whole.slice(idx + matches[0].length, whole.length);
+      return `${whole.slice(0, idx)}${newPart}${whole.slice(idx + matches[0].length, whole.length)}`
     }
   }();
 }
