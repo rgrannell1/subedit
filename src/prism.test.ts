@@ -119,6 +119,22 @@ Deno.test({
   },
 });
 
+Deno.test({
+  name: "MaybeGroupMatch.view: view only shows the relevant focus",
+  fn() {
+    const firstFocusPrism = SubEdit.MaybeGroupMatch(/([0-9]+)-([0-9]+)/d, 1);
+    const secondFocusPrism = SubEdit.MaybeGroupMatch(/([0-9]+)-([0-9]+)/d, 2);
+
+    for (const [first, second] of Peach.Array.from(sampleNumberPairs, 100)()) {
+      const whole = `${first}-${second}`;
+
+      assertEquals(firstFocusPrism.view(whole), first);
+      assertEquals(secondFocusPrism.view(whole), second);
+    }
+  },
+});
+
+
 
 Deno.test({
   name: "MaybeGroupMatch.set: if the pattern never matches, .set is idempotent",
@@ -138,6 +154,23 @@ Deno.test({
 
     for (const [part, whole] of Peach.Array.from(sampleNumberPairs, 100)()) {
       assertEquals(prism.set(part, whole), part);
+    }
+  },
+});
+
+Deno.test({
+  name: "MaybeGroupMatch.set: set only updates the relevant focus",
+  fn() {
+    const firstFocusPrism = SubEdit.MaybeGroupMatch(/([0-9]+)-([0-9]+)/d, 1);
+    const secondFocusPrism = SubEdit.MaybeGroupMatch(/([0-9]+)-([0-9]+)/d, 2);
+
+    const samples = Peach.Array.concat(sampleNumbers, sampleNumbers, sampleNumbers, sampleNumbers)
+
+    for (const [first, second, firstPart, secondPart] of Peach.Array.from(samples, 100)()) {
+      const whole = `${first}-${second}`;
+
+      assertEquals(firstFocusPrism.set(firstPart, whole), `${firstPart}-${second}`);
+      assertEquals(secondFocusPrism.set(secondPart, whole), `${first}-${secondPart}`);
     }
   },
 });

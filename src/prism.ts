@@ -54,6 +54,12 @@ export function MaybeMatch(pattern: RegExp) {
   *
   */
 export function MaybeGroupMatch(pattern: RegExp, index: number) {
+  if (pattern.flags.includes("g")) {
+    throw new Error(
+      "MaybeGroupMatch does not support the 'g' flag on the input pattern",
+    );
+  }
+
   if (!pattern.flags.includes("d")) {
     throw new Error(
       "MaybeGroupMatch requires the 'd' flag to be set on the input pattern",
