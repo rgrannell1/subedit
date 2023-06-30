@@ -14,7 +14,6 @@ export interface Prism<Whole, Part> {
 
 /*
  * Partial implementation of the prism interface, leaving view and set abstract
- *
  */
 export abstract class AbstractPrism<Whole, Part> implements Prism<Whole, Part> {
   abstract view(whole: Whole): Part | null;
@@ -84,7 +83,6 @@ export interface Traversal<Whole, Part> {
 
 /*
  * Partial implementation of the traversal interface, leaving view and modify abstract
- *
  */
 export abstract class AbstractTraversal<Whole, Part>
   implements Traversal<Whole, Part> {
