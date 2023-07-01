@@ -1,4 +1,4 @@
-import * as Peach from "../../peach.ts/src/mod.ts";
+import * as Peach from "https://deno.land/x/peach_ts@0.2.0/src/mod.ts";
 import * as SubEdit from "./mod.ts";
 import { assertEquals } from "https://deno.land/std@0.171.0/testing/asserts.ts";
 
