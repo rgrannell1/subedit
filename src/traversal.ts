@@ -4,7 +4,7 @@ import {
   Traversal,
 } from "./types.ts";
 
-/*
+/**
  * A traversal that matches a regular expression against a string.
  *
  * - view: returns an array of all matched strings
@@ -25,7 +25,7 @@ export function EachMatch(pattern: RegExp): StringTraversal {
 
   return new class extends StringTraversal {
     view(whole: string) {
-      let parts: string[] = [];
+      const parts: string[] = [];
 
       for (const match of whole.matchAll(pattern)) {
         parts.push(match[0]);
@@ -34,7 +34,7 @@ export function EachMatch(pattern: RegExp): StringTraversal {
       return parts;
     }
     indices(whole: string): number[][] {
-      let slices: number[][] = [];
+      const slices: number[][] = [];
 
       for (const match of whole.matchAll(pattern)) {
         const matchIndices = (match as RegExpMatchArrayIndexed).indices[0];
@@ -45,12 +45,12 @@ export function EachMatch(pattern: RegExp): StringTraversal {
     }
 
     modify(modifier: (part: string) => string, whole: string) {
-      let parts: string[] = [];
+      const parts: string[] = [];
       let start = 0;
 
       for (const match of whole.matchAll(pattern)) {
         const text = match[0];
-        const boundaries = (match as any).indices[0];
+        const boundaries = (match as RegExpMatchArrayIndexed).indices[0];
 
         // push text from the previous match up to this match
         parts.push(whole.slice(start, boundaries[0]));
@@ -69,7 +69,7 @@ export function EachMatch(pattern: RegExp): StringTraversal {
   }();
 }
 
-/*
+/**
  * A traversal that matches a regular expression's capture-group against a string.
  *
  * - view: returns an array of all matched strings
@@ -93,7 +93,7 @@ export function EachGroupMatch(
 
   return new class extends StringTraversal {
     view(whole: string) {
-      let parts: string[] = [];
+      const parts: string[] = [];
 
       for (const match of whole.matchAll(pattern)) {
         parts.push(match[index]);
@@ -102,7 +102,7 @@ export function EachGroupMatch(
       return parts;
     }
     indices(whole: string): number[][] {
-      let slices: number[][] = [];
+      const slices: number[][] = [];
 
       for (const match of whole.matchAll(pattern)) {
         const matchIndices = (match as RegExpMatchArrayIndexed).indices[index];
@@ -112,12 +112,12 @@ export function EachGroupMatch(
       return slices;
     }
     modify(modifier: (part: string) => string, whole: string) {
-      let parts: string[] = [];
+      const parts: string[] = [];
       let start = 0;
 
       for (const match of whole.matchAll(pattern)) {
         const text = match[index];
-        const boundaries = (match as any).indices[index];
+        const boundaries = (match as RegExpMatchArrayIndexed).indices[index];
 
         // push text from the previous match up to this match
         parts.push(whole.slice(start, boundaries[0]));

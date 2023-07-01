@@ -21,7 +21,6 @@ Deno.test({
   },
 });
 
-
 Deno.test({
   name: "EachMatch.view: if the pattern never matches, .view returns no parts",
   fn() {
@@ -34,35 +33,41 @@ Deno.test({
 });
 
 Deno.test({
-  name: "EachMatch.view: if the pattern matches each character, .view acts as split",
+  name:
+    "EachMatch.view: if the pattern matches each character, .view acts as split",
   fn() {
     const traversal = SubEdit.EachMatch(/[0-9]/gd);
 
     for (const whole of Peach.Array.from(sampleNumbers, 100)()) {
-      assertEquals(traversal.view(whole), whole.split(''));
+      assertEquals(traversal.view(whole), whole.split(""));
     }
   },
 });
 
 Deno.test({
-  name: "EachMatch.modify: if the input is empty, .modify acts as an identity function",
+  name:
+    "EachMatch.modify: if the input is empty, .modify acts as an identity function",
   fn() {
     const traversal = SubEdit.EachMatch(/[a-z]+/gd);
 
-    assertEquals(traversal.modify(() => {
-      throw Error('bang')
-    }, ""), "");
+    assertEquals(
+      traversal.modify(() => {
+        throw Error("bang");
+      }, ""),
+      "",
+    );
   },
 });
 
 Deno.test({
-  name: "EachMatch.modify: if the pattern never matches, .modify acts as an identity function",
+  name:
+    "EachMatch.modify: if the pattern never matches, .modify acts as an identity function",
   fn() {
     const traversal = SubEdit.EachMatch(/[a-z]+/gd);
 
     for (const whole of Peach.Array.from(sampleNumbers, 100)()) {
       const updated = traversal.modify(() => {
-        throw Error('bang')
+        throw Error("bang");
       }, whole);
 
       assertEquals(updated, whole);
@@ -71,7 +76,8 @@ Deno.test({
 });
 
 Deno.test({
-  name: "EachMatch.modify: elementwise uppercasing is the same as String.toUpperCase",
+  name:
+    "EachMatch.modify: elementwise uppercasing is the same as String.toUpperCase",
   fn() {
     const traversal = SubEdit.EachMatch(/[a-z]+/gd);
 
@@ -86,19 +92,21 @@ Deno.test({
 });
 
 Deno.test({
-  name: "EachMatch.modify: elementwise uppercasing is the same as String.toUpperCase",
+  name:
+    "EachMatch.modify: elementwise uppercasing is the same as String.toUpperCase",
   fn() {
     const traversal = SubEdit.EachMatch(/polo/gd);
     const dialogue = Peach.String.from(
-      Peach.Logic.oneOf(Peach.Number.uniform, ['marco', 'polo']),
-      Peach.Number.uniform(1, 10))
+      Peach.Logic.oneOf(Peach.Number.uniform, ["marco", "polo"]),
+      Peach.Number.uniform(1, 10),
+    );
 
     for (const whole of Peach.Array.from(dialogue, 100)()) {
       const updated = traversal.modify((polo: string) => {
         return polo.toUpperCase();
       }, whole);
 
-      const replaced = whole.replace(/polo/g, 'POLO')
+      const replaced = whole.replace(/polo/g, "POLO");
       assertEquals(updated, replaced);
     }
   },

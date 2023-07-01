@@ -1,6 +1,6 @@
 import { RegExpMatchArrayIndexed, StringPrism } from "./types.ts";
 
-/*
+/**
  * A prism that matches a regular expression (at most once) against a string.
  *
  * - view: returns the matched string, or null if no match
@@ -48,7 +48,7 @@ export function MaybeMatch(pattern: RegExp) {
   }();
 }
 
-/*
+/**
   * A prism that matches a regular expression with capture groups (at most once) against a string.
 ` *
   * - view: returns the matched capture-group, or null if no match
@@ -122,7 +122,7 @@ export function MaybeGroupMatch(pattern: RegExp, index: number) {
         return whole;
       }
 
-      let [groupStart, groupEnd] = matches.indices[index];
+      const [groupStart, groupEnd] = matches.indices[index];
 
       return whole.slice(0, groupStart) +
         newPart +

@@ -1,4 +1,4 @@
-/*
+/**
  * A prism is an optic that:
  * - may or may not return a part
  * - may or may not update a whole, depending if the part was found
@@ -12,7 +12,7 @@ export interface Prism<Whole, Part> {
   ): Prism<Whole, SubPart>;
 }
 
-/*
+/**
  * Partial implementation of the prism interface, leaving view and set abstract
  */
 export abstract class AbstractPrism<Whole, Part> implements Prism<Whole, Part> {
@@ -32,11 +32,11 @@ export abstract class AbstractPrism<Whole, Part> implements Prism<Whole, Part> {
   composePrism<SubPart>(
     secondPrism: Prism<Part, SubPart>,
   ): Prism<Whole, SubPart> {
-    let self = this;
+    const self = this;
 
     return new class extends AbstractPrism<Whole, SubPart>
       implements Prism<Whole, SubPart> {
-      /*
+      /**
        * Retrieve the part from the first, then from the second. Account for nulls.
        */
       view(whole: Whole): SubPart | null {
@@ -49,7 +49,7 @@ export abstract class AbstractPrism<Whole, Part> implements Prism<Whole, Part> {
         return secondPrism.view(firstPart as Part);
       }
 
-      /*
+      /**
        * Retrieve the part from the first. Update it with a second prism,
        * and update with the newly updated part
        */
@@ -69,7 +69,7 @@ export abstract class AbstractPrism<Whole, Part> implements Prism<Whole, Part> {
   }
 }
 
-/*
+/**
  * A traversal is an optic (sorry if this is misnamed!) that:
  * - views 0...n parts
  * - modifies the whole at the site of 0...n parts
@@ -80,7 +80,7 @@ export interface Traversal<Whole, Part> {
   composePrism<SubPart>(prism: Prism<Part, SubPart>): Traversal<Whole, SubPart>;
 }
 
-/*
+/**
  * Partial implementation of the traversal interface, leaving view and modify abstract
  */
 export abstract class AbstractTraversal<Whole, Part>
@@ -91,7 +91,7 @@ export abstract class AbstractTraversal<Whole, Part>
   composePrism<SubPart>(
     prism: Prism<Part, SubPart>,
   ): Traversal<Whole, SubPart> {
-    let self = this;
+    const self = this;
 
     return new class extends AbstractTraversal<Whole, SubPart>
       implements Traversal<Whole, SubPart> {
@@ -101,7 +101,7 @@ export abstract class AbstractTraversal<Whole, Part>
 
         const subparts: SubPart[] = [];
 
-        for (let part of parts) {
+        for (const part of parts) {
           const subpart = prism.view(part);
 
           // prisms can return null; do not preserve it
@@ -131,7 +131,7 @@ export abstract class AbstractTraversal<Whole, Part>
   composeTraversal<SubPart>(
     secondTraversal: Traversal<Part, SubPart>,
   ): Traversal<Whole, SubPart> {
-    let self = this;
+    const self = this;
 
     return new class extends AbstractTraversal<Whole, SubPart>
       implements Traversal<Whole, SubPart> {
@@ -141,7 +141,7 @@ export abstract class AbstractTraversal<Whole, Part>
 
         let subparts: SubPart[] = [];
 
-        for (let part of parts) {
+        for (const part of parts) {
           subparts = subparts.concat(secondTraversal.view(part));
         }
 
