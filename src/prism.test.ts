@@ -206,11 +206,13 @@ Deno.test({
 
       assertEquals(
         identity.view(whole),
-        identity.composePrism(identity).view(whole));
+        identity.composePrism(identity).view(whole),
+      );
 
-        assertEquals(
-          identity.set(part, whole),
-          identity.composePrism(identity).set(part, whole));
+      assertEquals(
+        identity.set(part, whole),
+        identity.composePrism(identity).set(part, whole),
+      );
     }
-  }
+  },
 });

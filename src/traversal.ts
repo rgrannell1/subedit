@@ -121,7 +121,7 @@ export function EachGroupMatch(
         // the pattern matched, but not the group.
         // this can be legitimately empty depending on the regexp
         if (text === undefined) {
-          continue
+          continue;
         }
 
         const boundaries = (match as RegExpMatchArrayIndexed).indices[index];

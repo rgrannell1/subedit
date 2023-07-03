@@ -114,12 +114,11 @@ Deno.test({
 
 Deno.test({
   name: "EachMatch.modify: modify is invoked elementwise",
-  fn () {
-
+  fn() {
     const numberPairs = SubEdit.EachMatch(/[0-9]{2}/dg);
 
     for (const whole of Peach.Array.from(sampleNumbers, 100)()) {
-      const expectedLength0 = numberPairs.view(whole)
+      const expectedLength0 = numberPairs.view(whole);
 
       let actualLength0 = 0;
       numberPairs.modify((pair: string) => {
@@ -129,16 +128,16 @@ Deno.test({
 
       assertEquals(expectedLength0, expectedLength0);
     }
-  }
-})
+  },
+});
 
 Deno.test({
   name: "EachGroupMatch.modify: modify is invoked elementwise",
-  fn () {
+  fn() {
     const numberPairsGroup = SubEdit.EachGroupMatch(/([0-9]){2}/dg, 1);
 
     for (const whole of Peach.Array.from(sampleNumbers, 100)()) {
-      const expectedLength1 = numberPairsGroup.view(whole)
+      const expectedLength1 = numberPairsGroup.view(whole);
 
       let actualLength1 = 0;
       numberPairsGroup.modify((pair: string) => {
@@ -148,8 +147,36 @@ Deno.test({
 
       assertEquals(expectedLength1, expectedLength1);
     }
-  }
-})
-
+  },
+});
 
 // ++++ Traversal Composition ++++ //
+Deno.test({
+  name:
+    "Traversal.composePrism.view: an always match prism acts as the original traversal",
+  fn() {
+    const digit = SubEdit.EachMatch(/[0-9]/dg);
+    const digitPrism = SubEdit.MaybeMatch(/[0-9]/d);
+
+    const composed = digit.composePrism(digitPrism);
+
+    for (const whole of Peach.Array.from(sampleNumbers, 100)()) {
+      assertEquals(composed.view(whole), digit.view(whole));
+    }
+  },
+});
+
+Deno.test({
+  name:
+    "Traversal.composePrism.view: an always match prism acts as the original traversal",
+  fn() {
+    const digit = SubEdit.EachMatch(/[0-9]/dg);
+    const digitPrism = SubEdit.MaybeMatch(/[0-9]{2}/d);
+
+    const composed = digit.composePrism(digitPrism);
+
+    for (const whole of Peach.Array.from(sampleNumbers, 100)()) {
+      assertEquals(composed.view(whole), []);
+    }
+  },
+});
