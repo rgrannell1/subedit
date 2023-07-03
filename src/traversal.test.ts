@@ -111,3 +111,45 @@ Deno.test({
     }
   },
 });
+
+Deno.test({
+  name: "EachMatch.modify: modify is invoked elementwise",
+  fn () {
+
+    const numberPairs = SubEdit.EachMatch(/[0-9]{2}/dg);
+
+    for (const whole of Peach.Array.from(sampleNumbers, 100)()) {
+      const expectedLength0 = numberPairs.view(whole)
+
+      let actualLength0 = 0;
+      numberPairs.modify((pair: string) => {
+        actualLength0 += 1;
+        return pair;
+      }, whole);
+
+      assertEquals(expectedLength0, expectedLength0);
+    }
+  }
+})
+
+Deno.test({
+  name: "EachGroupMatch.modify: modify is invoked elementwise",
+  fn () {
+    const numberPairsGroup = SubEdit.EachGroupMatch(/([0-9]){2}/dg, 1);
+
+    for (const whole of Peach.Array.from(sampleNumbers, 100)()) {
+      const expectedLength1 = numberPairsGroup.view(whole)
+
+      let actualLength1 = 0;
+      numberPairsGroup.modify((pair: string) => {
+        actualLength1 += 1;
+        return pair;
+      }, whole);
+
+      assertEquals(expectedLength1, expectedLength1);
+    }
+  }
+})
+
+
+// ++++ Traversal Composition ++++ //

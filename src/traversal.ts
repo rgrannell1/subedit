@@ -117,6 +117,13 @@ export function EachGroupMatch(
 
       for (const match of whole.matchAll(pattern)) {
         const text = match[index];
+
+        // the pattern matched, but not the group.
+        // this can be legitimately empty depending on the regexp
+        if (text === undefined) {
+          continue
+        }
+
         const boundaries = (match as RegExpMatchArrayIndexed).indices[index];
 
         // push text from the previous match up to this match

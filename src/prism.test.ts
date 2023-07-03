@@ -194,3 +194,23 @@ Deno.test({
     }
   },
 });
+
+// ++++ Prism Composition ++++ //
+Deno.test({
+  name: "Prism.composePrism: identity composition is idempotent",
+  fn() {
+    const identity = SubEdit.MaybeMatch(/.*/d);
+
+    for (const [part, whole] of Peach.Array.from(sampleNumberPairs, 100)()) {
+      assertEquals(identity.view(whole), whole);
+
+      assertEquals(
+        identity.view(whole),
+        identity.composePrism(identity).view(whole));
+
+        assertEquals(
+          identity.set(part, whole),
+          identity.composePrism(identity).set(part, whole));
+    }
+  }
+});
