@@ -3,6 +3,12 @@
 A regular-expression optic library for composable text-editing. See
 https://rgrannell.xyz/posts/composable-text-editing.html for details
 
+Deno Repository: https://deno.land/x/subedit
+
+```
+import * as SubEdit from 'https://deno.land/x/subedit/src/mod.ts'
+```
+
 ## Optics
 
 SubEdit defines several optic-constructors; parameterised functions that
